@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Meaning of Life</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      text-align: center;
+    }
+    h1 {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      padding: 20px;
+    }
+    .grid-item {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .grid-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    .meaning-text {
+      font-size: 1.2em;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    .date {
+      font-weight: bold;
+      color: #333;
+    }
+    .location {
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>The Meaning of Life</h1>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    async function fetchData() {
+      const response = await fetch('/api/data');
+      const data = await response.json();
+
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+
+      data.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.classList.add('grid-item');
+        card.style.backgroundColor = `hsl(${60 * index}, 50%, 80%)`;
+
+        card.innerHTML = `
+          <div class="meaning-text">${item.story}</div>
+          <div class="date">${item.date}</div>
+          <div class="location">${item.zone}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    fetchData();
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+#!/usr/bin/perl -w perpetual web spider
+
+open(X,'/usr/dict/words');while(<X>){chomp($_);push(@ALL,"http://google.com/search?q=$_");}close(X);
+
+while(@ALL){
+
+ $u = shift(@ALL);
+
+ print "\nTOTAL: ".@ALL."\n";
+
+ print "GRABBING: $u\n";
+
+ $_ = `lynx -source $u`;
+
+ push(@ALL,"$2") while m{<\s*A\s+HREF\s*=\s*(["']*)(http.*?)\1\s*>}gsix && print "NEW: $2\n";
+
+}

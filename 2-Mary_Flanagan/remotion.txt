@@ -1,0 +1,153 @@
+-- july-aug 2002
+
+-- mflanagan  mary@maryflanagan.com
+
+-- program [remotion] utilizing "TrackThemColors" xtra for director
+
+-- Make sure TrackThemColors Xtra is in the same folder as the application, that you run it on a pc,
+
+-- and that you have a camera hooked up to the computer running the program.
+
+-- If no camera is hooked up, the project won't run correctly.
+
+-- your webcam must use the video for windows (vfw) drivers!
+
+
+
+
+
+
+
+global trackObj
+
+on startMovie
+
+ openXlib "TrackThemColors.x32"
+
+ openXlib "TrackThemColorsDemo.x32"
+
+
+
+  set trackObj = new(xtra "TrackThemColors")
+
+  --trackObj is container for ttc
+
+
+
+  trackObj.initVideo(320,240, 1)
+
+  --initializes videocam
+
+
+
+trackObj.grabToCast(7)
+
+  --this puts the video into a cast member buffer to prevent video direct to stage way
+
+  --trackObj.showVideo(rect(0,0, 320, 240), rect (0,0,320,240))
+
+
+
+
+
+on stopmovie
+
+  CleanUp(trackObj)
+
+  set trackObj = 0
+
+  closeXlib
+
+
+
+end
+
+------/v2/img/enterproject.gif
+
+
+
+
+
+
+
+global trackObj
+
+
+
+on exitFrame me
+
+
+
+  trackObj.grabToCast(7)
+
+  myRectList=trackObj.trackChangeBlobs (255,0,5)
+
+  --return values from the method are as follows:
+
+  --number 1==change(number between 0 - 442),
+
+  --number 2=difference from reference
+
+  --(0 -compare this frame to the previous frame.
+
+  --1 - Compare this frame to a reference frame),
+
+  --number 3=and the padding (how close two blobs are!)
+
+
+
+  orderList = [:]
+
+
+
+  repeat with i in myRectList
+
+    area = (i[3] - i[1]) * (i[4] - i[2])
+
+    cx = (i[3] + i[1]) /2
+
+    cy = (i[4] + i[2]) /2
+
+    orderList.addProp(area, point(cx, cy))
+
+  end repeat
+
+
+
+  orderList.sort()
+
+
+
+
+
+  myNumRect=orderList.count
+
+
+
+  if (myNumRect >= 3) then
+
+    sprite(1).loc = orderList[myNumRect]
+
+    sprite(2).loc = orderList[myNumRect-1]
+
+    sprite(3).loc = orderList[myNumRect-2]
+
+
+
+   --    oneRect = myRectList[1]
+
+
+
+  end if
+
+
+
+
+
+
+
+  go to the frame
+
+
+
+end

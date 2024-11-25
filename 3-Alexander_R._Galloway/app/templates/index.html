@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        a {
+            text-decoration: none;
+            color: blue;
+            cursor: pointer;
+        }
+        a:hover {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>ASSIGNMENT: Move and connect three points in space</h1>
+    <h3>RESULT: What You See Is What You Get (5.1 K)</h3>
+
+    <h2>ENTRY POINT</h2>
+    <ul>
+        {% for item in first_point %}
+            <li><a href="{{ url_for('show_file', filename=item | replace(' ', '_')) }}" title="View content">{{ item }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h2>VANISHING POINT</h2>
+    <ul>
+        {% for item in second_point %}
+            <li><a href="{{ url_for('show_file', filename=item | replace(' ', '_')) }}" title="View content">{{ item }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h2>POINT OF NO RETURN</h2>
+    <ul>
+        {% for item in third_point %}
+            <li><a href="{{ url_for('show_file', filename=item | replace(' ', '_') + '.tex') }}" title="View content">{{ item }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

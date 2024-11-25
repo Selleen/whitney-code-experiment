@@ -1,0 +1,283 @@
+
+
+
+
+property spritenum
+
+property pAngle
+
+property pAngleVector
+
+property startH
+
+property startV
+
+property pAngleStep
+
+property pDiameter
+
+
+
+global averageH
+
+global averageV
+
+global spriteList
+
+
+
+
+
+on beginSprite
+
+  if random(3) = 1 then
+
+    sprite(spriteNum).visible = true
+
+  else
+
+    sprite(spriteNum).visible = false
+
+  end if
+
+
+
+  sprite(spriteNum).trails = true
+
+
+
+  pAngle = random(360)
+
+
+
+  startH = random(440)+75
+
+  startV = random(280)+75
+
+
+
+  if random(2) = 1 then
+
+    pAngleVector = -1
+
+  else
+
+    pAngleVector = 1
+
+  end if
+
+
+
+  if voidP(spriteList) then spriteList = []
+
+
+
+  if sprite(spriteNum).visible = true then spriteList.add(sprite(spriteNum).spriteNum)
+
+end beginSprite
+
+
+
+
+
+on enterFrame
+
+  if spriteList = [] then go to frame 1
+
+
+
+  calculateConstants()
+
+
+
+  move()
+
+
+
+  checkIntersect()
+
+
+
+  checkDone()
+
+
+
+  pAngle = pAngle + (pAngleStep * pAngleVector)
+
+
+
+  if abs(pAngle) > (360 * 7) then
+
+    (the stage).bgColor = rgb(200,200,0)
+
+    spriteList = []
+
+    go to frame 1
+
+  end if
+
+end enterFrame
+
+
+
+
+
+on exitFrame
+
+  go to the frame
+
+end exitFrame
+
+
+
+on calculateConstants
+
+  if spriteList.count > 0 then
+
+    repeat with x = 1 to spriteList.count
+
+      theSprite = spriteList[x]
+
+      sumH = sumH + sprite(theSprite).startH
+
+      sumV = sumV + sprite(theSprite).startV/v2/img/enterproject.gif
+
+    end repeat
+
+    averageH = sumH/spriteList.count
+
+    averageV = sumV/spriteList.count
+
+  else
+
+    go to frame 1
+
+  end if
+
+
+
+
+
+  difH = abs(startH - averageH)
+
+  difV = abs(startV - averageV)
+
+
+
+  pDiameter = sqrt((difH*difH) + (difV*difV))
+
+
+
+  pAngleStep = pDiameter/100.0
+
+  if pAngleStep < .75 then pAngleStep = .75
+
+  if pAngleStep > 2.5 then pAngleStep = 2.5
+
+end calculateConstants
+
+
+
+
+
+on move me
+
+  angle = 2.0 * PI * pAngle/360.0
+
+  deltaX = cos(angle)
+
+  deltaY = sin(angle)
+
+  sprite(spriteNum).locH = startH + (deltaX * pDiameter)
+
+  sprite(spriteNum).locV = startV + (deltaY * pDiameter)
+
+end move
+
+
+
+
+
+on checkIntersect
+
+  if abs(sprite(spriteNum).locH - averageH) < 2 then
+
+    if abs(sprite(spriteNum).locV - averageV) < 2 then
+
+      pAngleVector = 0
+
+    end if
+
+  end if
+
+end checkIntersect
+
+
+
+
+
+on checkDone
+
+  doneFlag = 0
+
+  repeat with x = 1 to spriteList.count
+
+    whichSprite = spriteList[x]
+
+    theStatus = sendSprite(whichSprite, #reportStatus)
+
+    if theStatus <> 0 then
+
+      doneFlag = 1
+
+      exit repeat
+
+    else
+
+      doneFlag = 0
+
+    end if
+
+  end repeat
+
+
+
+  if doneFlag = 0 then
+
+    clearGlobals
+
+    startTimer
+
+    repeat while the Timer < 150
+
+      nothing
+
+    end repeat
+
+    (the stage).bgColor = rgb(200,200,0)
+
+    spriteList = []
+
+    go to frame 1
+
+  end if
+
+end checkDone
+
+
+
+
+
+on reportStatus me
+
+  if voidP(pAngleVector) then pAngleVector = 0
+
+  return pAngleVector
+
+end reportStatus me
+
+
+
+Code with comments
+
+

